@@ -110,7 +110,7 @@ export class Game {
    */
   public getCurrentBreak(): number {
     let currentBreak = 1;
-    for (let i = this.visits.length; i > 0; i--) {
+    for (let i = this.visits.length - 1; i > 0; i--) {
       const visit = this.visits[i]!;
       if (
         visit.player !== this.currentPlayer ||
@@ -149,28 +149,20 @@ export class Game {
    * Calculates the highest possible remaining score
    * @returns the highest possible remaining score
    */
-  public pointsRemaining(): number {
+  public get pointsRemaining(): number {
     if (this.redRemaining > 0) {
       return (
-        this.redRemaining +
-        this.redRemaining * Ball.Black +
-        Object.values(Ball)
-          // Exclude the red, only count the coloured balls
-          .slice(1)
-          .reduce((total, ball) => total + (ball as Ball), 0)
+        this.redRemaining + this.redRemaining * Ball.Black + TotalColouredValues
       );
     } else {
       for (let i = this.visits.length; i > 0; i--) {
         const visit = this.visits[i]!;
         if (visit.outcome === Outcome.Pot) {
-          return (
-            Object.values(Ball)
-              // if the last potted ball is `green`, the remaining ones are
-              // `brown` to `black`. We want to slice the first three items of
-              // the array, and calculate the total of the remaining
-              .slice(visit.value)
-              .reduce((total, ball) => total + (ball as Ball), 0)
-          );
+          let remaining = 0;
+          for (let j = visit.value + 1; i <= Ball.Black; i++) {
+            remaining += j;
+          }
+          return remaining;
         }
       }
     }
@@ -197,6 +189,9 @@ export enum Ball {
 
 const FoulValue = 4;
 const RedCount = 15;
+
+const TotalColouredValues =
+  Ball.Yellow + Ball.Green + Ball.Brown + Ball.Blue + Ball.Pink + Ball.Black;
 
 export interface VisitResult {
   player: string;
