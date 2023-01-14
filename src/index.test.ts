@@ -1,4 +1,5 @@
-import { Ball, Game } from "./index";
+import { Ball, Game, RedCount, TotalColouredValues } from "./index";
+import { potReds } from "./utils";
 
 describe("Snooker game", () => {
   let game: Game;
@@ -71,6 +72,8 @@ describe("Snooker game", () => {
   describe("red remaining", () => {
     it("starts the game with 15 red remaining", () => {
       expect(game.redRemaining).toBe(15);
+      potReds(game, RedCount, expect);
+      expect(game.redRemaining).toBe(0);
     });
   });
 
@@ -87,7 +90,18 @@ describe("Snooker game", () => {
 
     it.todo("decrements the remaining points");
 
-    it.todo("counts the remaining total after all reds have been potted");
+    it.skip("counts the remaining total after all reds have been potted", () => {
+      potReds(game, RedCount, expect);
+
+      // Careful of the special case where there's no red remaining and the last
+      // potted colour is black
+      // it can either mean an end of game, or that it's the colour potted right
+      // after the last red has been potted
+      expect(game.pointsRemaining).toBe(TotalColouredValues); // currently fails and returns 0
+
+      game.pot(Ball.Yellow);
+      expect(game.pointsRemaining).toBe(TotalColouredValues - Ball.Yellow);
+    });
   });
 
   describe("break", () => {
@@ -116,5 +130,7 @@ describe("Snooker game", () => {
     it.todo("finds the winner to be the last one to pot the black");
 
     it.todo("lets a player concede");
+
+    it.todo("forces you to pot the balls in correct order to finish the game");
   });
 });

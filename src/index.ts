@@ -131,7 +131,7 @@ export class Game {
     return (
       RedCount -
       this.visits.reduce((pottedRedCount, visit) => {
-        return visit.value === Ball.Red ? pottedRedCount++ : pottedRedCount;
+        return visit.value === Ball.Red ? pottedRedCount + 1 : pottedRedCount;
       }, 0)
     );
   }
@@ -155,7 +155,7 @@ export class Game {
         this.redRemaining + this.redRemaining * Ball.Black + TotalColouredValues
       );
     } else {
-      for (let i = this.visits.length; i > 0; i--) {
+      for (let i = this.visits.length - 1; i > 0; i--) {
         const visit = this.visits[i]!;
         if (visit.outcome === Outcome.Pot) {
           let remaining = 0;
@@ -187,10 +187,10 @@ export enum Ball {
   Black = 7,
 }
 
-const FoulValue = 4;
-const RedCount = 15;
+export const FoulValue = 4;
+export const RedCount = 15;
 
-const TotalColouredValues =
+export const TotalColouredValues =
   Ball.Yellow + Ball.Green + Ball.Brown + Ball.Blue + Ball.Pink + Ball.Black;
 
 export interface VisitResult {
