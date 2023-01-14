@@ -1,4 +1,4 @@
-class Game {
+export class Game {
   private visits: VisitResult[] = [];
   private undidVisits: VisitResult[] = [];
 
@@ -179,13 +179,13 @@ class Game {
   }
 }
 
-enum Outcome {
+export enum Outcome {
   Pot,
   Miss,
   Foul,
 }
 
-enum Ball {
+export enum Ball {
   Red = 1,
   Yellow = 2,
   Green = 3,
@@ -198,7 +198,7 @@ enum Ball {
 const FoulValue = 4;
 const RedCount = 15;
 
-interface VisitResult {
+export interface VisitResult {
   player: string;
   outcome: Outcome;
   value: number;
