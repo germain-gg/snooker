@@ -27,10 +27,15 @@ describe("Snooker game", () => {
 
     it("is player2 turn if player1 makes a foul", () => {
       game.foul();
+      game.foulContinue();
       expect(game.currentPlayer).toBe(player2);
     });
 
-    it.todo("is player1 turns if player1 makes a foul and needs to replay");
+    it("is player1 turns if player1 makes a foul and needs to replay", () => {
+      game.foul();
+      game.foulReplay();
+      expect(game.currentPlayer).toBe(player1);
+    });
   });
 
   describe("foul", () => {

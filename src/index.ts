@@ -9,12 +9,18 @@ export class Game {
    */
   constructor(public player1: string, public player2: string) {}
 
+  /**
+   * Returns who the current player is
+   */
   public get currentPlayer(): string {
     const lastVisit = this.visits.at(-1);
     if (!lastVisit) {
       // Player 1 always starts
       return this.player1;
-    } else if (lastVisit.outcome === "pot") {
+    } else if (
+      lastVisit.outcome === "pot" ||
+      lastVisit.outcome === "foulContinue"
+    ) {
       // If the player has pot a ball during the last visit
       // the same player continues to play
       return lastVisit.player;
@@ -67,6 +73,26 @@ export class Game {
     this.addVisit({
       outcome: "foul",
       value: FoulValue,
+    });
+  }
+
+  /**
+   * The opponent asks the player who made to foul to make another attempt
+   */
+  public foulReplay(): void {
+    this.addVisit({
+      outcome: "foulReplay",
+      value: 0,
+    });
+  }
+
+  /**
+   * The opponent decides to take the shot after a player has fouled
+   */
+  public foulContinue(): void {
+    this.addVisit({
+      outcome: "foulContinue",
+      value: 0,
     });
   }
 
