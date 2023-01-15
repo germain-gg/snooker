@@ -77,12 +77,6 @@ describe("Snooker game", () => {
     });
   });
 
-  describe("color remaining", () => {
-    it.todo(
-      "tracks the remaining coloured balls once all the red have been potted"
-    );
-  });
-
   describe("remaining score", () => {
     it("knows there's 147 points", () => {
       expect(game.pointsRemaining).toBe(147);
@@ -113,13 +107,13 @@ describe("Snooker game", () => {
       expect(game.getCurrentBreak()).toBe(8);
     });
 
-    it.skip("resets the break when you foul", () => {
+    it("resets the break when you foul", () => {
       game.pot(Ball.Red);
       game.foul();
       expect(game.getCurrentBreak()).toBe(0);
     });
 
-    it.skip("resets the break when you miss", () => {
+    it("resets the break when you miss", () => {
       game.pot(Ball.Red);
       game.foul();
       expect(game.getCurrentBreak()).toBe(0);

@@ -109,8 +109,8 @@ export class Game {
    * @returns the break
    */
   public getCurrentBreak(): number {
-    let currentBreak = 1;
-    for (let i = this.visits.length - 1; i > 0; i--) {
+    let currentBreak = 0;
+    for (let i = this.visits.length - 1; i >= 0; i--) {
       const visit = this.visits[i]!;
       if (
         visit.player !== this.currentPlayer ||
