@@ -90,7 +90,7 @@ describe("Snooker game", () => {
 
     it.todo("decrements the remaining points");
 
-    it.skip("counts the remaining total after all reds have been potted", () => {
+    it("counts the remaining total after all reds have been potted", () => {
       potReds(game, RedCount, expect);
 
       // Careful of the special case where there's no red remaining and the last

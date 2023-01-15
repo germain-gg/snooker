@@ -157,9 +157,23 @@ export class Game {
     } else {
       for (let i = this.visits.length - 1; i > 0; i--) {
         const visit = this.visits[i]!;
+        const previousVisit = this.visits[i - 1]!;
+
+        // if there are no more reds in play, make sure that the colour potted
+        // was done as a consecutive shot to the last red being potted.
+        // If that's the case, all colours are still in play
+        if (
+          previousVisit.value === Ball.Red &&
+          previousVisit.player === visit.player
+        ) {
+          return TotalColouredValues;
+        }
+
+        // Otherwise we find the value of the last potted ball, and add all
+        // remaining ball values up until 7 (the value of the black ball)
         if (visit.outcome === Outcome.Pot) {
           let remaining = 0;
-          for (let j = visit.value + 1; i <= Ball.Black; i++) {
+          for (let j = visit.value + 1; j <= Ball.Black; j++) {
             remaining += j;
           }
           return remaining;
