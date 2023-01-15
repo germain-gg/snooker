@@ -14,7 +14,7 @@ export class Game {
     if (!lastVisit) {
       // Player 1 always starts
       return this.player1;
-    } else if (lastVisit.outcome === Outcome.Pot) {
+    } else if (lastVisit.outcome === "pot") {
       // If the player has pot a ball during the last visit
       // the same player continues to play
       return lastVisit.player;
@@ -24,40 +24,50 @@ export class Game {
     }
   }
 
+  /**
+   * Generic function to add one action taken during a game of snooker
+   * @param visit the action that occured during the frame
+   */
+  private addVisit(visit: Omit<VisitResult, "player">): void {
+    this.visits = [
+      ...this.visits,
+      {
+        ...visit,
+        player: this.currentPlayer,
+      },
+    ];
+    this.resetUndidVisits();
+  }
+
+  /**
+   * Current player successfully potted a ball
+   * @param ball the ball potted
+   */
   public pot(ball: Ball): void {
-    this.visits = [
-      ...this.visits,
-      {
-        player: this.currentPlayer,
-        outcome: Outcome.Pot,
-        value: ball,
-      },
-    ];
-    this.resetUndidVisits();
+    this.addVisit({
+      outcome: "pot",
+      value: ball,
+    });
   }
 
+  /**
+   * Current player missed a ball
+   */
   public miss(): void {
-    this.visits = [
-      ...this.visits,
-      {
-        player: this.currentPlayer,
-        outcome: Outcome.Miss,
-        value: 0,
-      },
-    ];
-    this.resetUndidVisits();
+    this.addVisit({
+      outcome: "miss",
+      value: 0,
+    });
   }
 
+  /**
+   * Current player made a foul
+   */
   public foul(): void {
-    this.visits = [
-      ...this.visits,
-      {
-        player: this.currentPlayer,
-        outcome: Outcome.Foul,
-        value: FoulValue,
-      },
-    ];
-    this.resetUndidVisits();
+    this.addVisit({
+      outcome: "foul",
+      value: FoulValue,
+    });
   }
 
   /**
@@ -92,10 +102,8 @@ export class Game {
    */
   public getScore(player: string): number {
     return this.visits.reduce((score: number, visit: VisitResult) => {
-      const isOwnAction =
-        visit.player === player && visit.outcome !== Outcome.Foul;
-      const opponentFoul =
-        visit.player !== player && visit.outcome === Outcome.Foul;
+      const isOwnAction = visit.player === player && visit.outcome !== "foul";
+      const opponentFoul = visit.player !== player && visit.outcome === "foul";
       if (isOwnAction || opponentFoul) {
         return score + visit.value;
       } else {
@@ -112,10 +120,7 @@ export class Game {
     let currentBreak = 0;
     for (let i = this.visits.length - 1; i >= 0; i--) {
       const visit = this.visits[i]!;
-      if (
-        visit.player !== this.currentPlayer ||
-        visit.outcome !== Outcome.Pot
-      ) {
+      if (visit.player !== this.currentPlayer || visit.outcome !== "pot") {
         return currentBreak;
       }
 
@@ -171,7 +176,7 @@ export class Game {
 
         // Otherwise we find the value of the last potted ball, and add all
         // remaining ball values up until 7 (the value of the black ball)
-        if (visit.outcome === Outcome.Pot) {
+        if (visit.outcome === "pot") {
           let remaining = 0;
           for (let j = visit.value + 1; j <= Ball.Black; j++) {
             remaining += j;
@@ -185,11 +190,7 @@ export class Game {
   }
 }
 
-export enum Outcome {
-  Pot,
-  Miss,
-  Foul,
-}
+export type Outcome = "pot" | "miss" | "foul" | "foulReplay" | "foulContinue";
 
 export enum Ball {
   Red = 1,
