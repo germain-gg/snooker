@@ -101,6 +101,10 @@ describe("Snooker game", () => {
       game.pot(Ball.Yellow);
       expect(game.pointsRemaining).toBe(TotalColouredValues - Ball.Yellow);
     });
+
+    it.todo(
+      "counts an extra black if the score is a tie when the last black is potted"
+    );
   });
 
   describe("break", () => {
