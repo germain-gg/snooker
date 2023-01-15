@@ -132,4 +132,12 @@ describe("Snooker game", () => {
 
     it.todo("forces you to pot the balls in correct order to finish the game");
   });
+
+  describe("winner", () => {
+    it.todo("player1 wins");
+
+    it.todo("player1 wins but player2 pots the last ball");
+
+    it.todo("player1 wins because player2 conceded");
+  });
 });

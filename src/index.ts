@@ -26,20 +26,26 @@ export class Game {
       return lastVisit.player;
     } else {
       // A miss or a foul means that it is the other player's turn
-      return lastVisit.player === this.player1 ? this.player2 : this.player1;
+      return this.getOppositePlayer(lastVisit.player);
     }
+  }
+
+  private getOppositePlayer(player: string) {
+    return player === this.player1 ? this.player2 : this.player1;
   }
 
   /**
    * Generic function to add one action taken during a game of snooker
    * @param visit the action that occured during the frame
    */
-  private addVisit(visit: Omit<VisitResult, "player">): void {
+  private addVisit(visit: Partial<VisitResult>): void {
     this.visits = [
       ...this.visits,
       {
-        ...visit,
+        outcome: "miss", // will always be overriden
+        value: 0,
         player: this.currentPlayer,
+        ...visit,
       },
     ];
     this.resetUndidVisits();
@@ -62,7 +68,6 @@ export class Game {
   public miss(): void {
     this.addVisit({
       outcome: "miss",
-      value: 0,
     });
   }
 
@@ -82,7 +87,6 @@ export class Game {
   public foulReplay(): void {
     this.addVisit({
       outcome: "foulReplay",
-      value: 0,
     });
   }
 
@@ -92,7 +96,18 @@ export class Game {
   public foulContinue(): void {
     this.addVisit({
       outcome: "foulContinue",
-      value: 0,
+    });
+  }
+
+  /**
+   * A player decides to concede
+   */
+  public concede(player: string) {
+    // TODO: Add a check that `player` matches the name of a player
+
+    this.addVisit({
+      outcome: "concede",
+      player: player,
     });
   }
 
@@ -214,9 +229,29 @@ export class Game {
 
     return 0;
   }
+
+  /**
+   * Finds who the winner is, returns null if the frame is unsettled
+   */
+  public get winner(): string | null {
+    const lastVisit = this.visits.at(-1);
+    if (lastVisit?.outcome === "concede") {
+      return this.getOppositePlayer(lastVisit.player);
+    }
+    if (this.pointsRemaining === 0) {
+      return this.scoreDifference > 0 ? this.player1 : this.player2;
+    }
+    return null;
+  }
 }
 
-export type Outcome = "pot" | "miss" | "foul" | "foulReplay" | "foulContinue";
+export type Outcome =
+  | "pot"
+  | "miss"
+  | "foul"
+  | "foulReplay"
+  | "foulContinue"
+  | "concede";
 
 export enum Ball {
   Red = 1,
